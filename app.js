@@ -16,7 +16,7 @@ function app(people) {
       break;
     case "no":
       // TODO: search by traits
-      // searchResults = searchByTrait(trait);
+      searchResults = searchByTrait(people);
       break;
     default:
       app(people); // restart app
@@ -89,12 +89,48 @@ function searchByName(people) {
   return foundPerson;
 }
 
-/*
-function searchByTrait(trait) {
-  let occupation = promptFor("What is the person's occupation?");
-  let = promptFor("What is the person's occupation?");
+function searchByTrait(people) {
+  let traitCategory = promptFor(
+    "What trait would you like to search for?\n\neyeColor, gender, height, weight, dob",
+    chars
+  );
+  let trait = promptFor("What " + traitCategory + " are you searching?", chars);
+
+  switch (traitCategory) {
+    case "eyeColor":
+      traitDecider(traitCategory, trait);
+      break;
+    case "gender":
+      traitDecider(traitCategory, trait);
+      break;
+    case "height":
+      traitDecider(traitCategory, trait);
+      break;
+    case "weight":
+      traitDecider(traitCategory, trait);
+      break;
+    case "dob":
+      traitDecider(traitCategory, trait);
+      break;
+    default:
+      searchByTrait(people);
+      break;
+  }
 }
-*/
+
+function traitDecider(traitCategory, trait) {
+  Number(trait);
+  let traitResponse = people.filter(function (person) {
+    if (person[traitCategory] === trait) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+  // TODO: find the person or persons with the same trait
+  let traitResult = traitResponse;
+  return traitResult;
+}
 
 // alerts a list of people
 function displayPeople(people) {
