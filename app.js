@@ -16,7 +16,7 @@ function app(people) {
       break;
     case "no":
       // TODO: search by traits
-      searchResults = searchByTrait(trait);
+      // searchResults = searchByTrait(trait);
       break;
     default:
       app(people); // restart app
@@ -29,10 +29,11 @@ function app(people) {
 
 // People Array that hold object with each individuals First and Last name
 let people = data.map(function (el) {
-  return {
-    firstName: el.firstName,
-    lastName: el.lastName,
-  };
+  // return {
+  //   firstName: el.firstName,
+  //   lastName: el.lastName,
+  // };
+  return el;
 });
 
 // Menu function to call once you find who you are looking for
@@ -76,7 +77,7 @@ function searchByName(people) {
   let firstName = promptFor("What is the person's first name?", chars);
   let lastName = promptFor("What is the person's last name?", chars);
 
-  let foundPerson = people.filter(function (person) {
+  let found = people.filter(function (person) {
     if (person.firstName === firstName && person.lastName === lastName) {
       return true;
     } else {
@@ -84,6 +85,7 @@ function searchByName(people) {
     }
   });
   // TODO: find the person using the name they entered
+  let foundPerson = found[0];
   return foundPerson;
 }
 
