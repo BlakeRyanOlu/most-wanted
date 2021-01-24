@@ -29,10 +29,6 @@ function app(people) {
 
 // People Array that hold object with each individuals First and Last name
 let people = data.map(function (el) {
-  // return {
-  //   firstName: el.firstName,
-  //   lastName: el.lastName,
-  // };
   return el;
 });
 
@@ -90,46 +86,86 @@ function searchByName(people) {
 }
 
 function searchByTrait(people) {
-  let traitCategory = promptFor(
-    "What trait would you like to search for?\n\neyeColor, gender, height, weight, dob",
-    chars
-  );
-  let trait = promptFor("What " + traitCategory + " are you searching?", chars);
-
-  switch (traitCategory) {
-    case "eyeColor":
-      traitDecider(traitCategory, trait);
-      break;
-    case "gender":
-      traitDecider(traitCategory, trait);
-      break;
-    case "height":
-      traitDecider(traitCategory, trait);
-      break;
-    case "weight":
-      traitDecider(traitCategory, trait);
-      break;
-    case "dob":
-      traitDecider(traitCategory, trait);
-      break;
-    default:
-      searchByTrait(people);
-      break;
-  }
-}
-
-function traitDecider(traitCategory, trait) {
-  Number(trait);
-  let traitResponse = people.filter(function (person) {
-    if (person[traitCategory] === trait) {
+  let traitsToCompare = traitValue();
+  let checker = true;
+  let result = people.filter(function (person) {
+    let traitKey = Object.keys(traitsToCompare);
+    for (let i = 0; i < traitKey.length; i++) {
+      if (person[traitKey[i]] !== traitsToCompare[traitKey[i]]) {
+        checker = false;
+        break;
+      } else {
+        checker = true;
+      }
+    }
+    if (checker) {
       return true;
     } else {
       return false;
     }
   });
-  // TODO: find the person or persons with the same trait
-  let traitResult = traitResponse;
-  return traitResult;
+  return result;
+}
+
+// function to get specific trait criteria to search for. Example: Gender can be male or female
+function traitValue() {
+  let returnedTraitCriteria = traitSearchCriteria();
+  let traitObj = {};
+
+  let traits = returnedTraitCriteria.map(function (el) {
+    let res;
+    switch (el) {
+      case "gender":
+        res = promptFor(
+          "Enter the gender you are searching for? male 👱🏼‍♂️ or female 👱🏼‍♀️",
+          chars
+        );
+        // return { gender: res };
+        return (traitObj.gender = res);
+      case "dob":
+        res = promptFor(
+          "Enter the date of birth you're searching for 🗓. Use this format:\n1/31/1900 or 12/31/1900",
+          chars
+        );
+        return (traitObj.dob = res);
+      case "height":
+        res = Number(
+          promptFor("Enter the height you're searching for ⾼", chars)
+        );
+        return (traitObj.height = res);
+      case "weight":
+        res = Number(
+          promptFor("Enter the weight you're searching for 𐄷", chars)
+        );
+        return (traitObj.weight = res);
+      case "eyeColor":
+        res = promptFor(
+          "Enter the eye-color you're searching for. Use standard color names like green, red...NOT potatoe-brown or golden-yellow 👁",
+          chars
+        );
+        return (traitObj.eyeColor = res);
+      default:
+        break;
+    }
+  });
+  // return single object containing users trait search criteria
+  return traitObj;
+}
+
+// function to get trait(s) attribute to search for
+function traitSearchCriteria() {
+  let traits = ["gender", "dob", "height", "weight", "eyeColor"];
+  let result = [];
+
+  let traitToSearchFor = promptFor(
+    "What trait would you like to search for?\n\nEnter:\n1 For Gender 👱🏼‍♂️👱🏼‍♀️\n2 Date of Birth 🗓\n3 For Height ⾼\n4 For Weight 𐄷\n5 For Eye Color 👁\n\nYou can search with multiple criteria seperated by comma like this: 1,3,5",
+    chars
+  ).split(",");
+
+  for (let i = 0; i < traitToSearchFor.length; i++) {
+    result.push(traits[traitToSearchFor[i] - 1]);
+  }
+  return result; // result in an array
 }
 
 // alerts a list of people
