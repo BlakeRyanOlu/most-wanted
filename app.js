@@ -104,7 +104,38 @@ function searchByTrait(people) {
       return false;
     }
   });
-  return result;
+  let foundPerson = displaySearchByTraitResult(result);
+  return foundPerson;
+}
+
+// function that dislays search by trait results usinig the prompt/alert
+function displaySearchByTraitResult(result) {
+  let printResult = "";
+  let searchResult;
+  if (result.length === 0) {
+    promptFor(
+      "There are no results based on your search criteria. Please refine your search criteria",
+      chars
+    );
+  } else {
+    for (let i = 0; i < result.length; i++) {
+      printResult +=
+        "[" +
+        (i + 1) +
+        "] " +
+        result[i].firstName +
+        " " +
+        result[i].lastName +
+        "\n";
+    }
+  }
+  searchResult = promptFor(
+    "Your search criteria returned the following result(s):\n" +
+      printResult +
+      "\nWould you like to get more information? If yes, type in the number index from the search result above",
+    chars
+  );
+  return result[searchResult - 1];
 }
 
 // function to get specific trait criteria to search for. Example: Gender can be male or female
