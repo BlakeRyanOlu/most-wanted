@@ -51,11 +51,12 @@ function mainMenu(person, people) {
 
   switch (displayOption) {
     case "info":
-      // TODO: get person's info
+      // TODO: get person's info - done
       displayPerson(person);
       break;
     case "family":
-      // TODO: get person's family
+      // TODO: get person's family -done
+      displayFamily(person);
       break;
     case "descendants":
       // TODO: get person's descendants -- use recursion
@@ -86,6 +87,7 @@ function searchByName(people) {
   return foundPerson;
 }
 
+/*******************TRAIT FUNCTIONALITY BEGINS HERE *********/
 function searchByTrait(people) {
   let traitsToCompare = traitValue();
   let checker = true;
@@ -198,6 +200,24 @@ function traitSearchCriteria() {
     result.push(traits[traitToSearchFor[i] - 1]);
   }
   return result; // result in an array
+}
+/*******************TRAIT FUNCTIONALITY ENDS HERE *********/
+
+// function to display found persons family: spouse, parent, siblings
+function displayFamily(person) {
+  // get current spouse
+  let spouseID = person.currentSpouse;
+  let spouse = people.filter(function (el) {
+    // el represents each element/objects been checked
+    if (el.id === spouseID) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+  let familyInfo =
+    "Current Spouse: " + spouse[0].firstName + " " + spouse[0].lastName + "\n";
+  alert(familyInfo);
 }
 
 // alerts a list of people
