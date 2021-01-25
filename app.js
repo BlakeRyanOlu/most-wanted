@@ -15,7 +15,7 @@ function app(people) {
       searchResults = searchByName(people);
       break;
     case "no":
-      // TODO: search by traits
+      // TODO: search by traits --DONE
       searchResults = searchByTrait(people);
       break;
     default:
@@ -52,12 +52,13 @@ function mainMenu(person, people) {
   switch (displayOption) {
     case "info":
       // TODO: get person's info
+      displayPerson(person);
       break;
     case "family":
       // TODO: get person's family
       break;
     case "descendants":
-      // TODO: get person's descendants
+      // TODO: get person's descendants -- use recursion
       break;
     case "restart":
       app(people); // restart
@@ -80,7 +81,7 @@ function searchByName(people) {
       return false;
     }
   });
-  // TODO: find the person using the name they entered
+  // TODO: find the person using the name they entered -DONE
   let foundPerson = found[0];
   return foundPerson;
 }
@@ -213,8 +214,18 @@ function displayPeople(people) {
 function displayPerson(person) {
   // print all of the information about a person:
   // height, weight, age, name, occupation, eye color.
+  // Callculate age based on Date of Birth in person object
+  let yearOfBirth = person.dob.split("/")[2];
+  person.age = 2021 - yearOfBirth;
+
   let personInfo = "First Name: " + person.firstName + "\n";
   personInfo += "Last Name: " + person.lastName + "\n";
+  personInfo += "Gender: " + person.gender + "\n";
+  personInfo += "Age: " + person.age + "\n";
+  personInfo += "Occupation: " + person.occupation + "\n";
+  personInfo += "Height: " + person.height + "\n";
+  personInfo += "Weight: " + person.weight + "\n";
+  personInfo += "Eye Color: " + person.eyeColor + "\n";
   // TODO: finish getting the rest of the information to display
   alert(personInfo);
 }
