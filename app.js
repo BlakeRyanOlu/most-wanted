@@ -150,6 +150,7 @@ function traitValue() {
     let res;
     switch (el) {
       case "gender":
+      case "Gender":
         res = promptFor(
           "Enter the gender you are searching for? male 👱🏼‍♂️ or female 👱🏼‍♀️",
           chars
@@ -157,31 +158,48 @@ function traitValue() {
         // return { gender: res };
         return (traitObj.gender = res);
       case "dob":
+      case "date of birth":
+      case "Date of Birth":
+      case "Date of birth":
         res = promptFor(
           "Enter the date of birth you're searching for 🗓. Use this format:\n1/31/1900 or 12/31/1900",
           chars
         );
         return (traitObj.dob = res);
       case "height":
+      case "Height":
         res = Number(
           promptFor("Enter the height you're searching for ⾼", chars)
         );
         return (traitObj.height = res);
       case "weight":
+      case "Weight":
         res = Number(
           promptFor("Enter the weight you're searching for 𐄷", chars)
         );
         return (traitObj.weight = res);
-      case "eyeColor":
+      case "eyecolor":
+      case "eye-color":
+      case "eye color":
+      case "Eye Color":
+      case "Eye color":
         res = promptFor(
           "Enter the eye-color you're searching for. Use standard color names like green, red...NOT potatoe-brown or golden-yellow 👁",
           chars
         );
       case "occupation":
+      case "Occupation":
         res = promptFor("Enter the occupation you're searching for 🏢", chars);
         return (traitObj.occupation = res);
-      default:
+      case "restart":
+      case "Restart":
+        app(people);
         break;
+      case "quit":
+      case "Quit":
+        return;
+      default:
+        traitSearchCriteria();
     }
   });
   // return single object containing users trait search criteria
@@ -194,14 +212,11 @@ function traitSearchCriteria() {
   let result = [];
 
   let traitToSearchFor = promptFor(
-    "What trait would you like to search for?\n\nEnter:\n1 For Gender 👱🏼‍♂️👱🏼‍♀️\n2 Date of Birth 🗓\n3 For Height ⾼\n4 For Weight 𐄷\n5 For Eye Color 👁\n6 For Occupation 🏢\nYou can search with multiple criteria seperated by comma like this: 1,3,5",
+    "What trait would you like to search for? Enter:\nGender, Date of Birth(dob), Height, Weight, Eye Color, Occupation OR any combination of each seperated by comma\n\nEnter quit to end or restart to run new search",
     chars
-  ).split(",");
-
-  for (let i = 0; i < traitToSearchFor.length; i++) {
-    result.push(traits[traitToSearchFor[i] - 1]);
-  }
-  return result; // result in an array
+  );
+  result = traitToSearchFor.split(",");
+  return result;
 }
 /*******************TRAIT FUNCTIONALITY ENDS HERE *********/
 
@@ -210,11 +225,14 @@ function traitSearchCriteria() {
 function displayFamily(person) {
   let spouse = findSpouse(person);
   let parent = findParent(person);
+  let sibling = findSiblings(person);
   let familyInfo = "Current Spouse: " + spouse + "\n";
-  familyInfo += parent + "\n";
+  familyInfo += parent;
+  familyInfo += sibling + "\n";
   alert(familyInfo);
 }
 
+// find spouse
 function findSpouse(person) {
   // get current spouse
   let spouseName;
@@ -235,6 +253,7 @@ function findSpouse(person) {
   return spouseName;
 }
 
+// find parent or parents
 function findParent(person) {
   //get person's parent
   let parentsName = "";
@@ -263,6 +282,31 @@ function findParent(person) {
     }
   }
   return parentsName;
+}
+
+// find siblings
+function findSiblings(person) {
+  // The single unifying factor for all siblings is that they share same parent or parents
+  let siblingsName = "";
+  let parentsID = person.parents;
+
+  if (parentsID.length === 0) {
+    siblingsName = "Siblings: Unknown";
+  } else {
+    for (let i = 0; i < parentsID.length; i++) {
+      let sibling = people.filter(function (el) {
+        if (el.parents[i] === parentsID[i] && el.id !== person.id) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+      siblingsName = sibling.map(function (obj) {
+        return obj.firstName + " " + obj.lastName;
+      });
+    }
+  }
+  return "Sibling(s): " + siblingsName.join(", ");
 }
 
 /****************** FAMILY FUNCTION ENDS HERE **********/
@@ -314,3 +358,16 @@ function yesNo(input) {
 function chars(input) {
   return true; // default validation only
 }
+
+/*
+  let traitToSearchFor = promptFor(
+    "What trait would you like to search for?\n\nEnter:\n1 For Gender 👱🏼‍♂️👱🏼‍♀️\n2 Date of Birth 🗓\n3 For Height ⾼\n4 For Weight 𐄷\n5 For Eye Color 👁\n6 For Occupation 🏢\nYou can search with multiple criteria seperated by comma like this: 1,3,5",
+    chars
+  ).split(",");
+
+  for (let i = 0; i < traitToSearchFor.length; i++) {
+    result.push(traits[traitToSearchFor[i] - 1]);
+  }
+  
+  return result; // result in an array
+  */
