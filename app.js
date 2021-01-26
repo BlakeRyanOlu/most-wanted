@@ -177,7 +177,9 @@ function traitValue() {
           "Enter the eye-color you're searching for. Use standard color names like green, red...NOT potatoe-brown or golden-yellow 👁",
           chars
         );
-        return (traitObj.eyeColor = res);
+      case "occupation":
+        res = promptFor("Enter the occupation you're searching for 🏢", chars);
+        return (traitObj.occupation = res);
       default:
         break;
     }
@@ -188,11 +190,11 @@ function traitValue() {
 
 // function to get trait(s) attribute to search for
 function traitSearchCriteria() {
-  let traits = ["gender", "dob", "height", "weight", "eyeColor"];
+  let traits = ["gender", "dob", "height", "weight", "eyeColor", "occupation"];
   let result = [];
 
   let traitToSearchFor = promptFor(
-    "What trait would you like to search for?\n\nEnter:\n1 For Gender 👱🏼‍♂️👱🏼‍♀️\n2 Date of Birth 🗓\n3 For Height ⾼\n4 For Weight 𐄷\n5 For Eye Color 👁\n\nYou can search with multiple criteria seperated by comma like this: 1,3,5",
+    "What trait would you like to search for?\n\nEnter:\n1 For Gender 👱🏼‍♂️👱🏼‍♀️\n2 Date of Birth 🗓\n3 For Height ⾼\n4 For Weight 𐄷\n5 For Eye Color 👁\n6 For Occupation 🏢\nYou can search with multiple criteria seperated by comma like this: 1,3,5",
     chars
   ).split(",");
 
@@ -203,22 +205,67 @@ function traitSearchCriteria() {
 }
 /*******************TRAIT FUNCTIONALITY ENDS HERE *********/
 
+/****************** FAMILY FUNCTION STARTS HERE ***********/
 // function to display found persons family: spouse, parent, siblings
 function displayFamily(person) {
-  // get current spouse
-  let spouseID = person.currentSpouse;
-  let spouse = people.filter(function (el) {
-    // el represents each element/objects been checked
-    if (el.id === spouseID) {
-      return true;
-    } else {
-      return false;
-    }
-  });
-  let familyInfo =
-    "Current Spouse: " + spouse[0].firstName + " " + spouse[0].lastName + "\n";
+  let spouse = findSpouse(person);
+  let parent = findParent(person);
+  let familyInfo = "Current Spouse: " + spouse + "\n";
+  familyInfo += parent + "\n";
   alert(familyInfo);
 }
+
+function findSpouse(person) {
+  // get current spouse
+  let spouseName;
+  let spouseID = person.currentSpouse;
+  if (!spouseID) {
+    spouseName = "Unknown";
+  } else {
+    let spouse = people.filter(function (el) {
+      // el represents each element/objects been checked
+      if (el.id === spouseID) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    spouseName = spouse[0].firstName + " " + spouse[0].lastName;
+  }
+  return spouseName;
+}
+
+function findParent(person) {
+  //get person's parent
+  let parentsName = "";
+  let parentsID = person.parents; // this is an array
+  if (parentsID.length === 0) {
+    // if array is emply, means parent is unknown
+    parentsName = "Parent: Unknown";
+  } else {
+    let parentType;
+    for (let i = 0; i < parentsID.length; i++) {
+      let parent = people.filter(function (el) {
+        if (el.id === parentsID[i]) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+      parentType = parent[0].gender === "male" ? "Father" : "Mother";
+      parentsName +=
+        parentType +
+        ": " +
+        parent[0].firstName +
+        " " +
+        parent[0].lastName +
+        "\n";
+    }
+  }
+  return parentsName;
+}
+
+/****************** FAMILY FUNCTION ENDS HERE **********/
 
 // alerts a list of people
 function displayPeople(people) {
