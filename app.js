@@ -118,10 +118,10 @@ function displaySearchByTraitResult(result) {
   let printResult = "";
   let searchResult;
   if (result.length === 0) {
-    promptFor(
-      "There are no results based on your search criteria. Please refine your search criteria",
-      chars
+    alert(
+      "There are no results based on your search criteria. Please refine your search criteria. Try Again!"
     );
+    searchByTrait(people);
   } else {
     for (let i = 0; i < result.length; i++) {
       printResult +=
@@ -205,6 +205,10 @@ function traitSearchCriteria() {
     "What trait would you like to search for? Enter:\n1 For Gender 👱🏼‍♂️👱🏼‍♀️\n2 Date of Birth 🗓\n3 For Height ⾼\n4 For Weight 𐄷\n5 For Eye Color 👁\n6 For Occupation 🏢\nYou can search with multiple criteria seperated by comma like this: 1,3,5",
     chars
   ).split(",");
+
+  if (traitToSearchFor === null) {
+    app(people);
+  }
 
   for (let i = 0; i < traitToSearchFor.length; i++) {
     result.push(traits[traitToSearchFor[i] - 1]);
@@ -338,6 +342,7 @@ function displayDescendants(person) {
 
 let descendants = [];
 let counter = 0;
+let i;
 function findDescendants(person) {
   let immediateDescendant = people.filter(function (el) {
     if (person.id === el.parents[0] || person.id === el.parents[1]) {
@@ -347,24 +352,10 @@ function findDescendants(person) {
       return false;
     }
   });
-  for (var i = counter; i < descendants.length; i++) {
+  for (i = counter; i < descendants.length; i++) {
     counter++;
     findDescendants(descendants[i]);
   }
-
-  // if (immediateDescendant.length === 0) {
-  //   descendants = "No Descendats Found";
-  // } else {
-  //   descendantNames = immediateDescendant.map(function (el) {
-  //     return el.firstName + " " + el.lastName;
-  //   });
-  // }
-  // descendants += descendantNames;
-  // person = immediateDescendant;
-  // if (immediateDescendant.length < 0) {
-  //   findDescendants(person);
-  // }
-  // return descendants;
 }
 
 /****************** DESCENDANT FUNCTION ENDS HERE **********/
@@ -383,7 +374,7 @@ function displayPeople(people) {
 function displayPerson(person) {
   // print all of the information about a person:
   // height, weight, age, name, occupation, eye color.
-  // Callculate age based on Date of Birth in person object
+  // Calculate age based on Date of Birth in person object
   let yearOfBirth = person.dob.split("/")[2];
   person.age = 2021 - yearOfBirth;
 
@@ -416,24 +407,3 @@ function yesNo(input) {
 function chars(input) {
   return true; // default validation only
 }
-
-/*
-  let traitToSearchFor = promptFor(
-    "What trait would you like to search for?\n\nEnter:\n1 For Gender 👱🏼‍♂️👱🏼‍♀️\n2 Date of Birth 🗓\n3 For Height ⾼\n4 For Weight 𐄷\n5 For Eye Color 👁\n6 For Occupation 🏢\nYou can search with multiple criteria seperated by comma like this: 1,3,5",
-    chars
-  ).split(",");
-
-  for (let i = 0; i < traitToSearchFor.length; i++) {
-    result.push(traits[traitToSearchFor[i] - 1]);
-  }
-  
-  return result; // result in an array
-  */
-/*
-  let traitToSearchFor = promptFor(
-    "What trait would you like to search for? Enter:\nGender, Date of Birth(dob), Height, Weight, Eye Color, Occupation OR any combination of each seperated by comma\n\nEnter quit to end or restart to run new search",
-    chars
-  );
-  result = traitToSearchFor.split(",");
-  return result;
-  */
