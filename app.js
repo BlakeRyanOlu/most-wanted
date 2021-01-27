@@ -60,6 +60,8 @@ function mainMenu(person, people) {
       break;
     case "descendants":
       // TODO: get person's descendants -- use recursion
+      findDescendants(person);
+      displayPeople(descendants);
       break;
     case "restart":
       app(people); // restart
@@ -150,7 +152,6 @@ function traitValue() {
     let res;
     switch (el) {
       case "gender":
-      case "Gender":
         res = promptFor(
           "Enter the gender you are searching for? male 👱🏼‍♂️ or female 👱🏼‍♀️",
           chars
@@ -158,45 +159,34 @@ function traitValue() {
         // return { gender: res };
         return (traitObj.gender = res);
       case "dob":
-      case "date of birth":
-      case "Date of Birth":
-      case "Date of birth":
         res = promptFor(
           "Enter the date of birth you're searching for 🗓. Use this format:\n1/31/1900 or 12/31/1900",
           chars
         );
         return (traitObj.dob = res);
       case "height":
-      case "Height":
         res = Number(
           promptFor("Enter the height you're searching for ⾼", chars)
         );
         return (traitObj.height = res);
       case "weight":
-      case "Weight":
         res = Number(
           promptFor("Enter the weight you're searching for 𐄷", chars)
         );
         return (traitObj.weight = res);
-      case "eyecolor":
-      case "eye-color":
-      case "eye color":
-      case "Eye Color":
-      case "Eye color":
+      case "eyeColor":
         res = promptFor(
           "Enter the eye-color you're searching for. Use standard color names like green, red...NOT potatoe-brown or golden-yellow 👁",
           chars
         );
+        return (traitObj.eyeColor = res);
       case "occupation":
-      case "Occupation":
         res = promptFor("Enter the occupation you're searching for 🏢", chars);
         return (traitObj.occupation = res);
       case "restart":
-      case "Restart":
         app(people);
         break;
       case "quit":
-      case "Quit":
         return;
       default:
         traitSearchCriteria();
@@ -212,11 +202,15 @@ function traitSearchCriteria() {
   let result = [];
 
   let traitToSearchFor = promptFor(
-    "What trait would you like to search for? Enter:\nGender, Date of Birth(dob), Height, Weight, Eye Color, Occupation OR any combination of each seperated by comma\n\nEnter quit to end or restart to run new search",
+    "What trait would you like to search for? Enter:\n1 For Gender 👱🏼‍♂️👱🏼‍♀️\n2 Date of Birth 🗓\n3 For Height ⾼\n4 For Weight 𐄷\n5 For Eye Color 👁\n6 For Occupation 🏢\nYou can search with multiple criteria seperated by comma like this: 1,3,5",
     chars
-  );
-  result = traitToSearchFor.split(",");
-  return result;
+  ).split(",");
+
+  for (let i = 0; i < traitToSearchFor.length; i++) {
+    result.push(traits[traitToSearchFor[i] - 1]);
+  }
+
+  return result; // result in an array
 }
 /*******************TRAIT FUNCTIONALITY ENDS HERE *********/
 
@@ -224,11 +218,15 @@ function traitSearchCriteria() {
 // function to display found persons family: spouse, parent, siblings
 function displayFamily(person) {
   let spouse = findSpouse(person);
+  let children = findChildren(person);
   let parent = findParent(person);
   let sibling = findSiblings(person);
-  let familyInfo = "Current Spouse: " + spouse + "\n";
-  familyInfo += parent;
+  let familyInfo =
+    person.firstName + " " + person.lastName + "'s Family Info:\n\n";
+  familyInfo += spouse + "\n";
+  familyInfo += children + "\n";
   familyInfo += sibling + "\n";
+  familyInfo += parent + "\n";
   alert(familyInfo);
 }
 
@@ -250,7 +248,7 @@ function findSpouse(person) {
     });
     spouseName = spouse[0].firstName + " " + spouse[0].lastName;
   }
-  return spouseName;
+  return "Current Spouse: " + spouseName;
 }
 
 // find parent or parents
@@ -291,7 +289,7 @@ function findSiblings(person) {
   let parentsID = person.parents;
 
   if (parentsID.length === 0) {
-    siblingsName = "Siblings: Unknown";
+    siblingsName = "Unknown";
   } else {
     for (let i = 0; i < parentsID.length; i++) {
       let sibling = people.filter(function (el) {
@@ -305,11 +303,71 @@ function findSiblings(person) {
         return obj.firstName + " " + obj.lastName;
       });
     }
+    siblingsName = siblingsName.join(", ");
   }
-  return "Sibling(s): " + siblingsName.join(", ");
+  return "Sibling(s): " + siblingsName;
 }
 
+function findChildren(person) {
+  let children = "";
+  let child = people
+    .filter(function (el) {
+      if (person.id === el.parents[0] || person.id === el.parents[1]) {
+        return true;
+      } else {
+        return false;
+      }
+    })
+    .map(function (el) {
+      return el.firstName + " " + el.lastName;
+    });
+  if (child.length === 0) {
+    return "Children: No Child Found";
+  } else {
+    children = child.join(", ");
+    return "Children: " + children;
+  }
+}
 /****************** FAMILY FUNCTION ENDS HERE **********/
+
+/****************** DESCENDANT FUNCTION STARTSS HERE **********/
+function displayDescendants(person) {
+  let descendants = findDescendants(person);
+  alert(descendants);
+}
+
+let descendants = [];
+let counter = 0;
+function findDescendants(person) {
+  let immediateDescendant = people.filter(function (el) {
+    if (person.id === el.parents[0] || person.id === el.parents[1]) {
+      descendants.push(el);
+      return true;
+    } else {
+      return false;
+    }
+  });
+  for (var i = counter; i < descendants.length; i++) {
+    counter++;
+    findDescendants(descendants[i]);
+  }
+
+  // if (immediateDescendant.length === 0) {
+  //   descendants = "No Descendats Found";
+  // } else {
+  //   descendantNames = immediateDescendant.map(function (el) {
+  //     return el.firstName + " " + el.lastName;
+  //   });
+  // }
+  // descendants += descendantNames;
+  // person = immediateDescendant;
+  // if (immediateDescendant.length < 0) {
+  //   findDescendants(person);
+  // }
+  // return descendants;
+}
+
+/****************** DESCENDANT FUNCTION ENDS HERE **********/
 
 // alerts a list of people
 function displayPeople(people) {
@@ -370,4 +428,12 @@ function chars(input) {
   }
   
   return result; // result in an array
+  */
+/*
+  let traitToSearchFor = promptFor(
+    "What trait would you like to search for? Enter:\nGender, Date of Birth(dob), Height, Weight, Eye Color, Occupation OR any combination of each seperated by comma\n\nEnter quit to end or restart to run new search",
+    chars
+  );
+  result = traitToSearchFor.split(",");
+  return result;
   */
